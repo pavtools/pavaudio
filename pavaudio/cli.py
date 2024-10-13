@@ -3,7 +3,7 @@ from json import load
 from pathlib import Path
 from typing import Annotated
 
-from appdirs import AppDirs
+from platformdirs import PlatformDirs
 from pydub import AudioSegment
 from pydub import silence
 from rich.console import Console
@@ -13,7 +13,8 @@ from pedalboard.io import AudioFile
 
 app = Typer()
 console = Console()
-dirs = AppDirs('sigchain', 'pavtools')
+
+dirs = PlatformDirs('sigchain', 'pavtools')
 path_arg = Annotated[Path, Argument()]
 config_path = Path(dirs.user_config_dir)
 
