@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pavaudio"
+version = "0.0.1"
+description = ""
+authors = ["dunossauro <dunossauro@protonmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+typer = "^0.12.5"
+pydub = "^0.25.1"
+
+[tool.poetry.scripts]
+pavaudio = "pavaudio.cli:app"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
