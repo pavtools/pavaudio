@@ -9,8 +9,8 @@ readme = "README.md"
 python = "^3.12"
 typer = "^0.12.5"
 pydub = "^0.25.1"
-appdirs = "^1.4.4"
 pedalboard = "^0.9.16"
+platformdirs = "^4.3.6"
 
 [tool.poetry.scripts]
 pavaudio = "pavaudio.cli:app"
