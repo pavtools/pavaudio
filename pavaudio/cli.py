@@ -1,15 +1,21 @@
 from enum import Enum
+from json import load
 from pathlib import Path
 from typing import Annotated
 
+from appdirs import AppDirs
 from pydub import AudioSegment
 from pydub import silence
 from rich.console import Console
 from typer import Argument, Option, Typer
+from pedalboard import Pedalboard, load_plugin
+from pedalboard.io import AudioFile
 
 app = Typer()
 console = Console()
+dirs = AppDirs('sigchain', 'pavtools')
 path_arg = Annotated[Path, Argument()]
+config_path = Path(dirs.user_config_dir)
 
 
 class Distance(str, Enum):
@@ -107,3 +113,25 @@ def cut_silences(
             threshold=threshold,
         ),
     )
+
+
+@app.command()
+def audio_processing(input_file: str, output_file: str):
+    """Apply vst effects on audio."""
+    # read plugins configuration
+    with open(config_path / 'config.json', 'r') as config_file:
+        config_data = load(config_file)
+
+    chain = [
+        load_plugin(plugin, parameter_values=config_data['plugins'][plugin])
+        for plugin in config_data['plugin_chain']
+    ]
+
+    board = Pedalboard(chain)
+
+    with AudioFile(input_file) as f:
+        with AudioFile(output_file, 'w', f.samplerate, f.num_channels) as o:
+            while f.tell() < f.frames:
+                chunk = f.read(f.samplerate)
+                effected = board(chunk, f.samplerate, reset=False)
+                o.write(effected)
